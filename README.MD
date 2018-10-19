@@ -4,3 +4,7 @@
 
 ### Требования: 
 * Наличие установленного в системе Docker
+
+### Образ на docker-hub:
+
+>  aayupov/php5.5.9-mssql-python

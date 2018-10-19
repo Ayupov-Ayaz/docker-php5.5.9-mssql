@@ -1,5 +1,5 @@
 FROM ubuntu:trusty
-MAINTAINER AAyupov <aayupov@nefco.ru>
+MAINTAINER Ayaz Ayupov <ayaz.ayupov@gmail.com>
 
 # Downloads URLs
 ENV MS_ODBC_URL https://download.microsoft.com/download/B/C/D/BCDD264C-7517-4B7D-8159-C99FC5535680/RedHat6/msodbcsql-11.0.2270.0.tar.gz
@@ -12,20 +12,20 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-RUN apt-get update && apt-get -y install aptitude wget unzip make gcc libkrb5-3 libgssapi-krb5-2
+RUN apt-get update && apt-get -y install aptitude wget unzip make gcc libkrb5-3 libgssapi-krb5-2 &&\
 
 # Download ODBC install files & scripts
-RUN cd /tmp && wget -O msodbcsql.tar.gz ${MS_ODBC_URL} && wget -O odbc-fixed.zip ${FIX_SCRIPT_URL}
+ cd /tmp && wget -O msodbcsql.tar.gz ${MS_ODBC_URL} && wget -O odbc-fixed.zip ${FIX_SCRIPT_URL} &&\
 
 # Unzip downloaded files
-RUN cd /tmp && tar -xzf ./msodbcsql.tar.gz && unzip -o ./odbc-fixed.zip && cp ./${FIX_SCRIPT}-master/* ./msodbcsql-11.0.2270.0
+ cd /tmp && tar -xzf ./msodbcsql.tar.gz && unzip -o ./odbc-fixed.zip && cp ./${FIX_SCRIPT}-master/* ./msodbcsql-11.0.2270.0 &&\
 
 # Run install scripts
-RUN cd /tmp/msodbcsql-11.0.2270.0 && yes YES | ./build_dm.sh --accept-warning --libdir=/usr/lib/x86_64-linux-gnu && \
-    ./install.sh install --accept-license --force
+cd /tmp/msodbcsql-11.0.2270.0 && yes YES | ./build_dm.sh --accept-warning --libdir=/usr/lib/x86_64-linux-gnu && \
+    ./install.sh install --accept-license --force &&\
 
 # Install apache and php5 with dependencies
-RUN apt-get update &&  apt-get -y install \
+apt-get update &&  apt-get -y install \
 
     #apache
      apache2 \
@@ -43,10 +43,10 @@ RUN apt-get update &&  apt-get -y install \
     #other
     curl &&\
     apt-get -y clean && \
-    apt-get -y autoremove
+    apt-get -y autoremove && \
 
-# Clean installation files
-RUN apt-get remove -y aptitude wget unzip make gcc && apt-get -y autoremove && apt-get clean && \
+    ## Clean installation files
+    apt-get remove -y aptitude wget unzip make gcc && apt-get -y autoremove && apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Set apache and php configs
